@@ -1,4 +1,4 @@
-package pl.codehouse.kata.roommanager.api.room;
+package pl.codehouse.kata.roommanager.api.room.dto;
 
 import jakarta.validation.constraints.Min;
 

@@ -5,6 +5,7 @@ import org.spockframework.spring.SpringBean
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import pl.codehouse.kata.roommanager.api.room.dto.RoomOccupancyDto
 import pl.codehouse.kata.roommanager.api.room.dto.RoomUsageDto
+import pl.codehouse.kata.roommanager.api.room.dto.RoomsAvailabilityDto
 import pl.codehouse.kata.roommanager.middleware.GlobalExceptionHandler
 import spock.lang.Specification
 

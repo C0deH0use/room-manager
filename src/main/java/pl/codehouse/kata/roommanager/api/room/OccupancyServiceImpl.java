@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pl.codehouse.kata.roommanager.api.room.dto.RoomOccupancyDto;
 import pl.codehouse.kata.roommanager.api.room.dto.RoomUsageDto;
+import pl.codehouse.kata.roommanager.api.room.dto.RoomsAvailabilityDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
