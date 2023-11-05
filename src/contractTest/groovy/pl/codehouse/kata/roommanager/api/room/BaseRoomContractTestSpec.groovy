@@ -15,7 +15,7 @@ abstract class BaseRoomContractTestSpec extends Specification {
     OccupancyService occupancyService = Mock(OccupancyService)
 
     def setup() {
-        occupancyService.checkInGuestsToAvailableRooms(_ as RoomsAvailabilityDto) >> new RoomOccupancyDto(new RoomUsageDto(3, 3.23), new RoomUsageDto(4, 7.54))
+        occupancyService.checkInGuests(_ as RoomsAvailabilityDto) >> new RoomOccupancyDto(new RoomUsageDto(3, 3.23), new RoomUsageDto(4, 7.54))
 
         RestAssuredMockMvc.standaloneSetup(new RoomResource(occupancyService), GlobalExceptionHandler)
     }

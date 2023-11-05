@@ -27,7 +27,7 @@ class RoomResource {
     @PostMapping
     ResponseEntity<RoomOccupancyDto> occupyAvailableRooms(@Valid @RequestBody RoomsAvailabilityDto roomsAvailabilityDto) {
         log.debug("Following {} rooms will be occupied with hotel guests", roomsAvailabilityDto);
-        var occupancy = service.checkInGuestsToAvailableRooms(roomsAvailabilityDto);
+        var occupancy = service.checkInGuests(roomsAvailabilityDto);
         return ResponseEntity.ok(occupancy);
     }
 }
