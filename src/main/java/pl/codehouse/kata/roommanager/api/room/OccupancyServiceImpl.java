@@ -25,8 +25,7 @@ class OccupancyServiceImpl implements OccupancyService {
     private final Predicate<? super BigDecimal> economyGuestPredicate = not(premiumGuestPredicate);
 
     public OccupancyServiceImpl(@Qualifier("guests") List<BigDecimal> guests) {
-        this.guests = guests;
-        this.guests.sort(Comparator.reverseOrder());
+        this.guests = guests.stream().sorted(Comparator.reverseOrder()).toList();
     }
 
     @Override
