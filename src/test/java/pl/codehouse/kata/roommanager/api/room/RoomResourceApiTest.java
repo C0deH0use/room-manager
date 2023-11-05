@@ -108,7 +108,7 @@ class RoomResourceApiTest {
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
                     .expectBody()
                     .jsonPath("premiumRooms.usage").isEqualTo(7)
-                    .jsonPath("premiumRooms.cost").isEqualTo(1153)
+                    .jsonPath("premiumRooms.cost").isEqualTo(1153.99)
                     .jsonPath("economyRooms.usage").isEqualTo(1)
                     .jsonPath("economyRooms.cost").isEqualTo(45);
         }
