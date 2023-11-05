@@ -22,54 +22,51 @@ class OccupancyServiceImpl implements OccupancyService {
     private static final BigDecimal ZERO_WITH_SCALE = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
     private final List<BigDecimal> guests;
     private final Predicate<? super BigDecimal> premiumGuestPredicate = (t) -> t.compareTo(PREMIUM_PRIZE_THRESHOLD) >= 0;
+    private final Predicate<? super BigDecimal> economyGuestPredicate = not(premiumGuestPredicate);
 
     public OccupancyServiceImpl(@Qualifier("guests") List<BigDecimal> guests) {
         this.guests = guests;
+        this.guests.sort(Comparator.reverseOrder());
     }
 
     @Override
     public RoomOccupancyDto checkInGuests(RoomsAvailabilityDto roomsAvailabilityDto) {
         var availablePremiumRooms = new AtomicInteger(roomsAvailabilityDto.premium());
         var premiumUsage = MutablePair.of(0, ZERO_WITH_SCALE);
-        this.guests
-                .stream()
-                .filter(premiumGuestPredicate)
-                .sorted(Comparator.reverseOrder())
-                .filter(guest -> availablePremiumRooms.getAndDecrement() > 0)
-                .forEach(guest -> {
-                    premiumUsage.left++;
-                    premiumUsage.right = premiumUsage.right.add(guest);
-                });
-
         var availableEconomyRooms = new AtomicInteger(roomsAvailabilityDto.economy());
         var economyUsage = MutablePair.of(0, ZERO_WITH_SCALE);
-
 
         long economyGuests = this.guests
                 .stream()
                 .filter(not(premiumGuestPredicate))
                 .count();
-        this.guests
-                .stream()
-                .filter(not(premiumGuestPredicate))
-                .sorted(Comparator.reverseOrder())
-                .forEach(guest -> {
-                    if (availablePremiumRooms.get() > 0 && economyGuests > roomsAvailabilityDto.economy()) {
-                        premiumUsage.left++;
-                        premiumUsage.right = premiumUsage.right.add(guest);
-                        availablePremiumRooms.decrementAndGet();
-                        return;
-                    }
+        for (var guest : this.guests) {
 
-                    if (availableEconomyRooms.get() > 0) {
-                        economyUsage.left++;
-                        economyUsage.right = economyUsage.right.add(guest);
-                        availableEconomyRooms.decrementAndGet();
-                    }
-                });
+            if (premiumGuestPredicate.test(guest) && availablePremiumRooms.get() > 0) {
+                premiumUsage.left++;
+                premiumUsage.right = premiumUsage.right.add(guest);
+                availablePremiumRooms.decrementAndGet();
+            }
+
+            if (economyGuestPredicate.test(guest)) {
+                if (isEconomyGuestAllowedForUpgrade(roomsAvailabilityDto, availablePremiumRooms, economyGuests)) {
+                    premiumUsage.left++;
+                    premiumUsage.right = premiumUsage.right.add(guest);
+                    availablePremiumRooms.decrementAndGet();
+                } else if (availableEconomyRooms.get() > 0) {
+                    economyUsage.left++;
+                    economyUsage.right = economyUsage.right.add(guest);
+                    availableEconomyRooms.decrementAndGet();
+                }
+            }
+        }
 
         RoomUsageDto premiumRoomsUsage = new RoomUsageDto(premiumUsage.left, premiumUsage.right.doubleValue());
         RoomUsageDto economyRoomsUsage = new RoomUsageDto(economyUsage.left, economyUsage.right.doubleValue());
         return new RoomOccupancyDto(premiumRoomsUsage, economyRoomsUsage);
+    }
+
+    private static boolean isEconomyGuestAllowedForUpgrade(RoomsAvailabilityDto roomsAvailabilityDto, AtomicInteger availablePremiumRooms, long economyGuests) {
+        return availablePremiumRooms.get() > 0 && economyGuests > roomsAvailabilityDto.economy();
     }
 }
