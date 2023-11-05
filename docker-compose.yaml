@@ -1,0 +1,12 @@
+version: "3.8"
+
+name: room-manager
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    ports:
+      - "8080:8080"
