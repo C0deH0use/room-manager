@@ -1,0 +1,83 @@
+#@name Example Test cases - Case One
+POST http://localhost:8080/api/v1/rooms
+Content-Type: application/json
+
+{
+  "economy": 3,
+  "premium": 3
+}
+
+> {%
+    client.test("Should correct allocated room types with cost", function () {
+        client.assert(response.status === 200)
+
+        client.assert(response.body.premiumRooms.usage === 3, "Incorrect premiumRooms - usage value")
+        client.assert(response.body.premiumRooms.cost === 738.0, "Incorrect premiumRooms - cost value")
+        client.assert(response.body.economyRooms.usage === 3, "Incorrect economyRooms - usage value")
+        client.assert(response.body.economyRooms.cost === 167.99, "Incorrect economyRooms - cost value")
+    })
+%}
+
+###
+#@name Example Test cases - Case Two
+POST http://localhost:8080/api/v1/rooms
+Content-Type: application/json
+
+{
+  "economy": 5,
+  "premium": 7
+}
+
+> {%
+    client.test("Should correct allocated room types with cost", function () {
+        client.assert(response.status === 200)
+
+        client.assert(response.body.premiumRooms.usage === 6, "Incorrect premiumRooms - usage value")
+        client.assert(response.body.premiumRooms.cost === 1054, "Incorrect premiumRooms - cost value")
+        client.assert(response.body.economyRooms.usage === 4, "Incorrect economyRooms - usage value")
+        client.assert(response.body.economyRooms.cost === 189.99, "Incorrect economyRooms - cost value")
+    })
+%}
+
+###
+#@name Example Test cases - Case Three
+POST http://localhost:8080/api/v1/rooms
+Content-Type: application/json
+
+{
+  "economy": 7,
+  "premium": 2
+}
+
+> {%
+    client.test("Should correct allocated room types with cost", function () {
+        client.assert(response.status === 200)
+
+        client.assert(response.body.premiumRooms.usage === 2, "Incorrect premiumRooms - usage value")
+        client.assert(response.body.premiumRooms.cost === 583, "Incorrect premiumRooms - cost value")
+        client.assert(response.body.economyRooms.usage === 4, "Incorrect economyRooms - usage value")
+        client.assert(response.body.economyRooms.cost === 189.99, "Incorrect economyRooms - cost value")
+    })
+%}
+
+###
+#@name Example Test cases - Case Four
+POST http://localhost:8080/api/v1/rooms
+Content-Type: application/json
+
+{
+  "economy": 1,
+  "premium": 7
+}
+
+> {%
+    client.test("Should correct allocated room types with cost", function () {
+        client.assert(response.status === 200)
+
+        client.assert(response.body.premiumRooms.usage === 7, "Incorrect premiumRooms - usage value")
+        client.assert(response.body.premiumRooms.cost === 1153.99, "Incorrect premiumRooms - cost value")
+        client.assert(response.body.economyRooms.usage === 1, "Incorrect economyRooms - usage value")
+        client.assert(response.body.economyRooms.cost === 45, "Incorrect economyRooms - cost value")
+    })
+%}
+
